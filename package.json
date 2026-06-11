@@ -1,7 +1,7 @@
 {
-  "name": "html-css",
+  "name": "demo-melawai",
   "version": "1.0.0",
-  "description": "A template for HTML and CSS",
+  "description": "Qiscus custom channel menu widget — Demo Melawai",
   "main": "index.html",
   "scripts": {
     "start": "serve"

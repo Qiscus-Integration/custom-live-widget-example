@@ -105,7 +105,12 @@
      * Set localStorage untuk bypass login form.
      */
     setBypassLogin: function () {
-      if (!ENABLE_LOGIN_BYPASS) return;
+      if (!ENABLE_LOGIN_BYPASS) {
+        // Bersihkan sesi bypass lama (mis. dari case lain di dashboard
+        // showcase) supaya case dengan bypass off selalu mulai bersih.
+        localStorage.removeItem("qismo-widget");
+        return;
+      }
 
       var existing = localStorage.getItem("qismo-widget");
       if (!existing) {

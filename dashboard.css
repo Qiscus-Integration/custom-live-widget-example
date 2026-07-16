@@ -1,0 +1,246 @@
+/* ============================================================
+   dashboard.css — Widget Customization Showcase
+   Reuses :root variables from styles.css (linked before this file).
+   ============================================================ */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  color: var(--text);
+  background: #fafafa;
+}
+
+/* ========== Hero ========== */
+.dash-hero {
+  background: var(--accent);
+  color: #fff;
+  padding: 40px 24px;
+}
+
+.dash-hero-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.dash-eyebrow {
+  font-size: 13px;
+  opacity: 0.7;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.dash-hero h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.dash-hero p {
+  margin: 0;
+  max-width: 640px;
+  opacity: 0.85;
+  line-height: 1.5;
+  font-size: 14.5px;
+}
+
+/* ========== Layout ========== */
+.dash-layout {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 28px 24px 60px;
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .dash-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ========== Case picker ========== */
+.dash-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+@media (max-width: 860px) {
+  .dash-picker {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+}
+
+.dash-category {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 240px;
+}
+
+.dash-category-label {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--muted);
+  padding: 0 4px;
+}
+
+.dash-card {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  cursor: pointer;
+  transition: background 0.12s ease, border-color 0.12s ease;
+  font: inherit;
+  color: inherit;
+}
+
+.dash-card:hover {
+  background: var(--accent-soft);
+}
+
+.dash-card-title {
+  font-weight: 600;
+  font-size: 14.5px;
+  margin-bottom: 3px;
+}
+
+.dash-card-tagline {
+  font-size: 12.5px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.dash-card.is-active {
+  border-color: var(--accent);
+  border-left-width: 4px;
+  background: var(--accent-soft);
+}
+
+.dash-card.is-active .dash-card-title {
+  color: var(--accent);
+}
+
+.dash-card.is-empty {
+  cursor: default;
+  border-style: dashed;
+  color: var(--muted);
+}
+
+.dash-card.is-empty:hover {
+  background: #fff;
+}
+
+/* ========== Detail + preview ========== */
+.dash-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  min-width: 0;
+}
+
+.dash-description {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+}
+
+.dash-description h2 {
+  margin: 0 0 10px;
+  font-size: 18px;
+}
+
+.dash-description ul {
+  margin: 0;
+  padding-left: 20px;
+  line-height: 1.6;
+  font-size: 14px;
+  color: var(--text);
+}
+
+.dash-description li {
+  margin-bottom: 6px;
+}
+
+.dash-description li:last-child {
+  margin-bottom: 0;
+}
+
+.dash-preview {
+  position: relative;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(17, 24, 39, 0.08);
+  overflow: hidden;
+  min-height: 720px;
+}
+
+@media (max-width: 860px) {
+  .dash-preview {
+    min-height: 560px;
+  }
+}
+
+.dash-preview-iframe {
+  display: block;
+  width: 100%;
+  height: 720px;
+  border: 0;
+}
+
+@media (max-width: 860px) {
+  .dash-preview-iframe {
+    height: 560px;
+  }
+}
+
+.dash-preview-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.75);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.dash-preview-overlay.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dash-spinner {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 3px solid var(--accent-soft);
+  border-top-color: var(--accent);
+  animation: dash-spin 0.7s linear infinite;
+}
+
+@keyframes dash-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Widget Customization Showcase — Qiscus</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="dashboard.css" />
+  </head>
+  <body>
+    <header class="dash-hero">
+      <div class="dash-hero-inner">
+        <div class="dash-eyebrow">Qiscus Omnichannel</div>
+        <h1>Widget Customization Showcase</h1>
+        <p>
+          Pilih salah satu case di samping untuk melihat live chat
+          widget Qiscus yang sesungguhnya (bukan mockup) — lengkap
+          dengan kustomisasinya masing-masing.
+        </p>
+      </div>
+    </header>
+
+    <main class="dash-layout">
+      <!-- Case picker: dirender oleh dashboard.js dari js/cases.js -->
+      <nav class="dash-picker" id="dash-picker" aria-label="Daftar case kustomisasi"></nav>
+
+      <section class="dash-detail">
+        <div class="dash-description" id="dash-description">
+          <!-- Judul case + bullet kustomisasi, dirender oleh dashboard.js -->
+        </div>
+
+        <div class="dash-preview">
+          <div class="dash-preview-overlay" id="dash-preview-overlay">
+            <div class="dash-spinner"></div>
+          </div>
+          <iframe
+            id="dash-preview-iframe"
+            class="dash-preview-iframe"
+            title="Live preview widget Qiscus"
+          ></iframe>
+        </div>
+      </section>
+    </main>
+
+    <script src="js/cases.js"></script>
+    <script src="js/dashboard.js"></script>
+  </body>
+</html>

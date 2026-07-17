@@ -124,6 +124,10 @@ var QISCUS_OPTIONS = {
   ],
 };
 
+// Case bisa menimpa/menambah opsi SDK (mis. extra_fields, ukuran widget,
+// breakpoint mobile) lewat overrides.qiscusOptions — shallow merge.
+Object.assign(QISCUS_OPTIONS, ACTIVE_CASE.overrides.qiscusOptions || {});
+
 
 // ── Login screen (pre-chat form) customization ─────────────
 // Kustomisasi header form login (warna judul/tombol terpisah, wrap
@@ -322,4 +326,9 @@ var WIDGET_CUSTOM_CSS =
   "   .slick-next" +
   "   { width: 38px !important; height: 38px !important;" +
   "     min-width: 38px !important; min-height: 38px !important; }" +
-  " }";
+  " }" +
+  /* CSS tambahan per-case (kategori Login Form Behavior & Chat Room
+     Styling) — di-append PALING AKHIR supaya menang urutan cascade
+     terhadap rule dasar di atas (sama-sama !important → yang belakang
+     menang). */
+  " " + (ACTIVE_CASE.overrides.extraCss || "");

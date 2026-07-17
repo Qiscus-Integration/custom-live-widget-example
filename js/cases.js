@@ -188,6 +188,373 @@ var CASES = [
       },
     ],
   },
+
+  // ══ Login Form Behavior ══════════════════════════════════════
+  {
+    id: "q4-bypass-login",
+    categoryId: "login-behavior",
+    label: "Q4 · Bypass Form Login",
+    tagline: "User yang sudah login di website langsung masuk chat, tanpa isi form",
+    description: [
+      "Default platform: setiap user harus mengisi form login pre-chat (nama, email) sebelum bisa chat",
+      "Kalau user sudah login di website client, datanya bisa dipakai langsung — form login di-skip total",
+      "Caranya: set localStorage key \"qismo-widget\" berisi data user SEBELUM Qismo di-init",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: true,
+    },
+    snippets: [
+      {
+        title: "Bypass login — isi localStorage sebelum init Qismo",
+        code:
+          "// Ambil data user dari sesi login website Anda (dinamis!)\n" +
+          "var loggedInUser = {\n" +
+          "  unique_id: \"budi@perusahaan.com\",   // wajib unik per user\n" +
+          "  display_name: \"Budi Santoso\",\n" +
+          "  extra_fields: JSON.stringify([\n" +
+          "    { key: \"company\", value: \"PT Maju Jaya\" },\n" +
+          "  ]),\n" +
+          "};\n\n" +
+          "// HARUS dipanggil SEBELUM new Qismo(...)\n" +
+          "if (!localStorage.getItem(\"qismo-widget\")) {\n" +
+          "  localStorage.setItem(\"qismo-widget\", JSON.stringify(loggedInUser));\n" +
+          "}\n\n" +
+          "new Qismo(\"YOUR_APP_ID\", { options: { channel_id: YOUR_CHANNEL_ID } });",
+      },
+      {
+        title: "Bersihkan sesi saat user logout dari website",
+        code:
+          "// Panggil di handler logout website Anda, supaya user berikutnya\n" +
+          "// tidak mewarisi sesi chat user sebelumnya.\n" +
+          "localStorage.removeItem(\"qismo-widget\");",
+      },
+    ],
+  },
+  {
+    id: "q5-extra-fields",
+    categoryId: "login-behavior",
+    label: "Q5 · Field Tambahan di Form Login",
+    tagline: "Tambah field custom (mis. Nomor Order) di form pre-chat",
+    description: [
+      "Default platform: form login hanya berisi nama & email",
+      "Lewat opsi extra_fields, form bisa ditambah field custom — mis. nama perusahaan dan nomor order",
+      "Isian field ini ikut terkirim sebagai info customer, terlihat agent di dashboard Omnichannel",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      qiscusOptions: {
+        extra_fields: [
+          {
+            name: "company",
+            placeholder: "Nama perusahaan Anda",
+            visible: true,
+          },
+          {
+            name: "order_number",
+            placeholder: "Nomor order (jika ada)",
+            visible: true,
+          },
+        ],
+      },
+    },
+    snippets: [
+      {
+        title: "Konfigurasi extra_fields di options Qismo",
+        code:
+          "new Qismo(\"YOUR_APP_ID\", {\n" +
+          "  options: {\n" +
+          "    channel_id: YOUR_CHANNEL_ID,\n" +
+          "    extra_fields: [\n" +
+          "      {\n" +
+          "        name: \"company\",\n" +
+          "        placeholder: \"Nama perusahaan Anda\",\n" +
+          "        visible: true,\n" +
+          "      },\n" +
+          "      {\n" +
+          "        name: \"order_number\",\n" +
+          "        placeholder: \"Nomor order (jika ada)\",\n" +
+          "        visible: true,\n" +
+          "      },\n" +
+          "    ],\n" +
+          "  },\n" +
+          "});",
+      },
+    ],
+  },
+  {
+    id: "q6-button-text",
+    categoryId: "login-behavior",
+    label: "Q6 · Ganti Teks Tombol Start Chat",
+    tagline: "Label tombol jadi CTA brand sendiri, mis. \"Mulai Konsultasi\"",
+    description: [
+      "Default platform: teks tombol submit form login adalah \"Start Chat\" dan tidak ada setting untuk mengubahnya",
+      "Dengan custom CSS, teks aslinya di-nolkan lalu diganti via ::after content — pola yang sama dengan override judul (Q2)",
+      "Cocok untuk lokalisasi bahasa atau CTA yang lebih sesuai funnel client",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      extraCss:
+        ".qcw-cs-submit-form.qismo-login-btn" +
+        " { font-size: 0 !important; line-height: 0 !important; }" +
+        " .qcw-cs-submit-form.qismo-login-btn::after" +
+        " { content: \"Mulai Konsultasi\"; display: block;" +
+        "   font-size: 15px; line-height: 1.4; font-weight: 600; }",
+    },
+    snippets: [
+      {
+        title: "Custom CSS — ganti label tombol Start Chat",
+        code:
+          "/* Nolkan teks asli \"Start Chat\" */\n" +
+          ".qcw-cs-submit-form.qismo-login-btn {\n" +
+          "  font-size: 0 !important;\n" +
+          "  line-height: 0 !important;\n" +
+          "}\n\n" +
+          "/* Render label pengganti */\n" +
+          ".qcw-cs-submit-form.qismo-login-btn::after {\n" +
+          "  content: \"Mulai Konsultasi\";\n" +
+          "  display: block;\n" +
+          "  font-size: 15px;\n" +
+          "  line-height: 1.4;\n" +
+          "  font-weight: 600;\n" +
+          "}",
+      },
+    ],
+  },
+  {
+    id: "q7-input-styling",
+    categoryId: "login-behavior",
+    label: "Q7 · Styling Input Form Login",
+    tagline: "Input rounded + border warna brand saat focus",
+    description: [
+      "Default platform: tampilan input form login mengikuti style bawaan, tidak bisa diubah dari dashboard",
+      "Dengan custom CSS, border-radius, warna border saat focus, dan warna placeholder bisa disesuaikan brand",
+      "Custom CSS dikirim ke iframe form login (qcw-login-form-iframe) via postMessage, sama seperti case lain",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      extraCss:
+        ".qismo-login-form input[type=\"text\"]," +
+        " .qismo-login-form input[type=\"email\"]," +
+        " .qismo-login-form input" +
+        " { border-radius: 10px !important; border: 1.5px solid #d6dbe4 !important;" +
+        "   padding: 10px 14px !important; transition: border-color .15s ease; }" +
+        " .qismo-login-form input:focus" +
+        " { border-color: #0043CE !important; outline: none !important;" +
+        "   box-shadow: 0 0 0 3px rgba(0,67,206,0.12) !important; }" +
+        " .qismo-login-form input::placeholder" +
+        " { color: #9aa3b2 !important; }",
+    },
+    snippets: [
+      {
+        title: "Custom CSS — input rounded + focus warna brand",
+        code:
+          ".qismo-login-form input {\n" +
+          "  border-radius: 10px !important;\n" +
+          "  border: 1.5px solid #d6dbe4 !important;\n" +
+          "  padding: 10px 14px !important;\n" +
+          "  transition: border-color .15s ease;\n" +
+          "}\n\n" +
+          ".qismo-login-form input:focus {\n" +
+          "  border-color: #0043CE !important;\n" +
+          "  outline: none !important;\n" +
+          "  box-shadow: 0 0 0 3px rgba(0, 67, 206, 0.12) !important;\n" +
+          "}\n\n" +
+          ".qismo-login-form input::placeholder {\n" +
+          "  color: #9aa3b2 !important;\n" +
+          "}",
+      },
+    ],
+  },
+
+  // ══ Chat Room Styling ════════════════════════════════════════
+  {
+    id: "q8-header-color",
+    categoryId: "chat-room-style",
+    label: "Q8 · Warna Header Chat Room",
+    tagline: "Header room memakai warna brand #0043CE, bukan default",
+    description: [
+      "Default platform: warna header chat room mengikuti satu setting warna global di dashboard Qiscus",
+      "Dengan custom CSS, header room bisa dipaksa memakai warna brand yang presisi (demo ini #0043CE, teks putih)",
+      "Berlaku juga untuk nama channel & subteks di dalam header",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      extraCss:
+        ".qcw-header" +
+        " { background: #0043CE !important; color: #ffffff !important; }" +
+        " .qcw-header *" +
+        " { color: #ffffff !important; }",
+    },
+    snippets: [
+      {
+        title: "Custom CSS — header chat room warna brand",
+        code:
+          ".qcw-header {\n" +
+          "  background: #0043CE !important;\n" +
+          "  color: #ffffff !important;\n" +
+          "}\n\n" +
+          "/* Nama channel & subteks di header ikut putih */\n" +
+          ".qcw-header * {\n" +
+          "  color: #ffffff !important;\n" +
+          "}",
+      },
+    ],
+  },
+  {
+    id: "q9-bubble-colors",
+    categoryId: "chat-room-style",
+    label: "Q9 · Warna Bubble Chat",
+    tagline: "Bubble customer biru brand, bubble agent abu muda",
+    description: [
+      "Default platform: warna bubble chat mengikuti tema bawaan, tidak ada setting terpisah customer vs agent",
+      "Dengan custom CSS, bubble pesan customer (kanan) dan agent (kiri) bisa diberi warna berbeda",
+      "Demo ini: customer #0043CE teks putih, agent #f1f3f7 teks gelap",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      extraCss:
+        ".qcw-comment--me .qcw-comment__message," +
+        " .comment--me .comment__bubble," +
+        " div[class*=\"comment--me\"] div[class*=\"bubble\"]" +
+        " { background: #0043CE !important; color: #ffffff !important; }" +
+        " .qcw-comment--other .qcw-comment__message," +
+        " .comment--other .comment__bubble," +
+        " div[class*=\"comment--other\"] div[class*=\"bubble\"]" +
+        " { background: #f1f3f7 !important; color: #1f2733 !important; }",
+    },
+    snippets: [
+      {
+        title: "Custom CSS — bubble customer vs agent beda warna",
+        code:
+          "/* Bubble pesan customer (sisi kanan) */\n" +
+          ".qcw-comment--me .qcw-comment__message {\n" +
+          "  background: #0043CE !important;\n" +
+          "  color: #ffffff !important;\n" +
+          "}\n\n" +
+          "/* Bubble pesan agent (sisi kiri) */\n" +
+          ".qcw-comment--other .qcw-comment__message {\n" +
+          "  background: #f1f3f7 !important;\n" +
+          "  color: #1f2733 !important;\n" +
+          "}",
+      },
+    ],
+  },
+  {
+    id: "q10-custom-font",
+    categoryId: "chat-room-style",
+    label: "Q10 · Custom Font Chat Room",
+    tagline: "Seluruh chat room memakai font brand, bukan font default",
+    description: [
+      "Default platform: font widget mengikuti bawaan, tidak ada setting font di dashboard",
+      "Dengan custom CSS, font-family seluruh chat room bisa diganti mengikuti font brand client",
+      "Untuk webfont (mis. Google Fonts), @import harus diletakkan di BARIS PERTAMA string CSS — kalau tidak, browser mengabaikannya",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      extraCss:
+        ".qcw-container, .qcw-container *," +
+        " .qismo-login-form, .qismo-login-form *, body" +
+        " { font-family: Georgia, \"Times New Roman\", serif !important; }",
+    },
+    snippets: [
+      {
+        title: "Custom CSS — ganti font seluruh widget (Google Fonts)",
+        code:
+          "/* @import WAJIB di baris paling atas string CSS */\n" +
+          "@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap');\n\n" +
+          "body,\n" +
+          ".qcw-container,\n" +
+          ".qcw-container *,\n" +
+          ".qismo-login-form,\n" +
+          ".qismo-login-form * {\n" +
+          "  font-family: 'Plus Jakarta Sans', sans-serif !important;\n" +
+          "}",
+      },
+      {
+        title: "Catatan penggunaan",
+        code:
+          "• @import harus jadi rule PERTAMA di string widgetCustomCSS,\n" +
+          "  sebelum rule CSS lain — kalau tidak, font tidak akan ter-load.\n" +
+          "• Demo di preview ini memakai font sistem (Georgia) supaya\n" +
+          "  perubahan langsung terlihat tanpa request eksternal.\n" +
+          "• Alternatif tanpa @import: @font-face dengan file WOFF2 di CDN\n" +
+          "  milik client (boleh diletakkan di posisi mana pun).",
+      },
+    ],
+  },
+  {
+    id: "q11-hide-powered-by",
+    categoryId: "chat-room-style",
+    label: "Q11 · Sembunyikan \"Powered by Qiscus\"",
+    tagline: "Footer branding disembunyikan agar widget tampil full white-label",
+    description: [
+      "Default platform: chat room menampilkan footer \"Powered by Qiscus\" di bagian bawah",
+      "Dengan custom CSS satu rule display:none, footer branding disembunyikan untuk tampilan white-label",
+      "Catatan: pastikan white-label sesuai ketentuan paket/lisensi Qiscus yang dipakai client",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      extraCss:
+        ".qcw-powered-by," +
+        " .qismo-powered-by," +
+        " div[class*=\"powered\"]," +
+        " a[href*=\"qiscus.com\"][class*=\"powered\"]" +
+        " { display: none !important; }",
+    },
+    snippets: [
+      {
+        title: "Custom CSS — sembunyikan footer Powered by Qiscus",
+        code:
+          ".qcw-powered-by,\n" +
+          ".qismo-powered-by,\n" +
+          "div[class*=\"powered\"] {\n" +
+          "  display: none !important;\n" +
+          "}",
+      },
+    ],
+  },
+  {
+    id: "q12-widget-size",
+    categoryId: "chat-room-style",
+    label: "Q12 · Ukuran & Breakpoint Widget",
+    tagline: "Widget desktop lebih tinggi (640/700px), mode mobile mulai 480px",
+    description: [
+      "Default platform: tinggi widget desktop dan breakpoint mobile memakai nilai bawaan SDK",
+      "Lewat opsi widgetDesktopSizes, tinggi chat room desktop bisa diatur (demo ini 640px, membesar ke 700px saat viewport tinggi)",
+      "Opsi mobileBreakPoint menentukan lebar layar maksimum saat widget beralih ke tampilan fullscreen mobile (demo ini 480px)",
+    ],
+    overrides: {
+      loginHeader: null,
+      enableLoginBypass: false,
+      qiscusOptions: {
+        widgetDesktopSizes: [640, 700],
+        mobileBreakPoint: 480,
+      },
+    },
+    snippets: [
+      {
+        title: "Konfigurasi ukuran & breakpoint di options Qismo",
+        code:
+          "new Qismo(\"YOUR_APP_ID\", {\n" +
+          "  options: {\n" +
+          "    channel_id: YOUR_CHANNEL_ID,\n\n" +
+          "    // Tinggi widget di desktop: [normal, saat viewport tinggi]\n" +
+          "    widgetDesktopSizes: [640, 700],\n\n" +
+          "    // Layar ≤ 480px → widget tampil fullscreen ala mobile\n" +
+          "    mobileBreakPoint: 480,\n" +
+          "  },\n" +
+          "});",
+      },
+    ],
+  },
 ];
 
 // ── Helper: resolve case dari id, fallback ke "default" ──────

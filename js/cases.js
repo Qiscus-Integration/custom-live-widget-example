@@ -490,41 +490,9 @@ var CASES = [
     ],
   },
   {
-    id: "q11-hide-powered-by",
+    id: "q11-widget-size",
     categoryId: "chat-room-style",
-    label: "Q11 · Sembunyikan \"Powered by Qiscus\"",
-    tagline: "Footer branding disembunyikan agar widget tampil full white-label",
-    description: [
-      "Default platform: chat room menampilkan footer \"Powered by Qiscus\" di bagian bawah",
-      "Dengan custom CSS satu rule display:none, footer branding disembunyikan untuk tampilan white-label",
-      "Catatan: pastikan white-label sesuai ketentuan paket/lisensi Qiscus yang dipakai client",
-    ],
-    overrides: {
-      loginHeader: null,
-      enableLoginBypass: false,
-      extraCss:
-        ".qcw-powered-by," +
-        " .qismo-powered-by," +
-        " div[class*=\"powered\"]," +
-        " a[href*=\"qiscus.com\"][class*=\"powered\"]" +
-        " { display: none !important; }",
-    },
-    snippets: [
-      {
-        title: "Custom CSS — sembunyikan footer Powered by Qiscus",
-        code:
-          ".qcw-powered-by,\n" +
-          ".qismo-powered-by,\n" +
-          "div[class*=\"powered\"] {\n" +
-          "  display: none !important;\n" +
-          "}",
-      },
-    ],
-  },
-  {
-    id: "q12-widget-size",
-    categoryId: "chat-room-style",
-    label: "Q12 · Ukuran & Breakpoint Widget",
+    label: "Q11 · Ukuran & Breakpoint Widget",
     tagline: "Widget desktop lebih tinggi (640/700px), mode mobile mulai 480px",
     description: [
       "Default platform: tinggi widget desktop dan breakpoint mobile memakai nilai bawaan SDK",

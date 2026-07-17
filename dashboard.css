@@ -191,25 +191,29 @@ body {
   border-radius: var(--radius);
   box-shadow: 0 12px 32px rgba(1, 65, 108, 0.08);
   overflow: hidden;
-  min-height: 720px;
+  /* Widget Qiscus mem-posisikan popup-nya (welcome/login-form,
+     tinggi hingga 720px) dengan "bottom: 68px" relatif ke viewport
+     iframe sendiri — jadi iframe butuh tinggi >= 720+68px supaya
+     bagian atas popup tidak ke-crop. 860px kasih ruang lega. */
+  min-height: 860px;
 }
 
 @media (max-width: 860px) {
   .dash-preview {
-    min-height: 560px;
+    min-height: 700px;
   }
 }
 
 .dash-preview-iframe {
   display: block;
   width: 100%;
-  height: 720px;
+  height: 860px;
   border: 0;
 }
 
 @media (max-width: 860px) {
   .dash-preview-iframe {
-    height: 560px;
+    height: 700px;
   }
 }
 

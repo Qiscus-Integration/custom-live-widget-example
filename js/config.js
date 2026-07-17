@@ -124,6 +124,7 @@ var QISCUS_OPTIONS = {
   ],
 };
 
+
 // ── Login screen (pre-chat form) customization ─────────────
 // Kustomisasi header form login (warna judul/tombol terpisah, wrap
 // teks judul lebih panjang, mode banner gambar) — ditentukan oleh
@@ -134,24 +135,49 @@ var QISCUS_OPTIONS = {
 var LOGIN_HEADER = ACTIVE_CASE.overrides.loginHeader || {
   titleColor: "",
   buttonColor: "",
+  allowLongTitle: false,
+  titleOverrideText: "",
   bannerImageUrl: "",
   bannerAspectRatio: "2.5 / 1",
 };
 
 // ── Custom CSS for Qiscus iframe ───────────────────────────
+// Tiap fitur kustomisasi login form berdiri sendiri (Q1 warna,
+// Q2 judul panjang, Q3 banner) — case bisa mengaktifkan salah satu
+// tanpa menyeret yang lain.
 var WIDGET_CUSTOM_CSS =
   ".qcw-header { background: #111827 !important; color: #fff !important; }" +
   (LOGIN_HEADER.titleColor
-    ? /* Login form (pre-chat) — pisahkan warna teks judul & tombol */
+    ? /* Q1a — warna teks judul form login, terpisah dari tombol */
       " .qismo-login-form__header," +
       " .qismo-login-form__header h3" +
-      " { color: " + LOGIN_HEADER.titleColor + " !important; }" +
-      /* Judul tetap rapi walau teksnya lebih panjang dari default 20 char */
-      " .qismo-login-form__header," +
-      " .qismo-login-form__header h3" +
-      " { white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; }" +
+      " { color: " + LOGIN_HEADER.titleColor + " !important; }"
+    : "") +
+  (LOGIN_HEADER.buttonColor
+    ? /* Q1b — warna tombol Start Chat, terpisah dari judul */
       " .qcw-cs-submit-form.qismo-login-btn" +
       " { background-color: " + LOGIN_HEADER.buttonColor + " !important; }"
+    : "") +
+  (LOGIN_HEADER.titleColor || LOGIN_HEADER.allowLongTitle
+    ? /* Q2a — judul tetap rapi walau lebih panjang dari default 20 char */
+      " .qismo-login-form__header," +
+      " .qismo-login-form__header h3" +
+      " { white-space: normal !important; overflow-wrap: break-word !important; word-break: break-word !important; }"
+    : "") +
+  (LOGIN_HEADER.titleOverrideText
+    ? /* Q2b — ganti teks judul via CSS. Teks judul asli di-set dari
+         dashboard Qiscus (dibatasi ±20 char) dan remote config-nya
+         menimpa opsi lokal formGreet/formSecondGreet (diverifikasi
+         dari source qismo-v5.js: e.variables di-apply SETELAH merge
+         options), jadi satu-satunya jalur yang pasti menang adalah
+         custom CSS: nolkan font judul asli, render pengganti via
+         ::after content. */
+      " .qismo-login-form__header h3" +
+      " { font-size: 0 !important; line-height: 0 !important; }" +
+      " .qismo-login-form__header h3::after" +
+      " { content: \"" + LOGIN_HEADER.titleOverrideText + "\";" +
+      "   display: block; font-size: 22px; line-height: 1.35;" +
+      "   font-weight: 700; }"
     : "") +
   (LOGIN_HEADER.bannerImageUrl
     ? /* Mode banner: sembunyikan teks judul & logo default, tampilkan gambar */

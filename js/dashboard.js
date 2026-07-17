@@ -66,6 +66,13 @@
     });
   }
 
+  function escapeHtml(str) {
+    return str
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;");
+  }
+
   function renderDescription(caseObj) {
     var bullets = caseObj.description
       .map(function (line) {
@@ -73,8 +80,39 @@
       })
       .join("");
 
+    var snippets = (caseObj.snippets || [])
+      .map(function (snippet) {
+        return (
+          '<div class="dash-snippet">' +
+          '<div class="dash-snippet-head">' +
+          "<span>" + escapeHtml(snippet.title) + "</span>" +
+          '<button type="button" class="dash-snippet-copy">Copy</button>' +
+          "</div>" +
+          "<pre><code>" + escapeHtml(snippet.code) + "</code></pre>" +
+          "</div>"
+        );
+      })
+      .join("");
+
     dom.description.innerHTML =
-      "<h2>" + caseObj.label + "</h2><ul>" + bullets + "</ul>";
+      "<h2>" + caseObj.label + "</h2><ul>" + bullets + "</ul>" + snippets;
+
+    bindCopyButtons(caseObj);
+  }
+
+  function bindCopyButtons(caseObj) {
+    var buttons = dom.description.querySelectorAll(".dash-snippet-copy");
+    buttons.forEach(function (button, index) {
+      button.addEventListener("click", function () {
+        var code = caseObj.snippets[index].code;
+        navigator.clipboard.writeText(code).then(function () {
+          button.textContent = "Copied!";
+          setTimeout(function () {
+            button.textContent = "Copy";
+          }, 1500);
+        });
+      });
+    });
   }
 
   function updateActiveCard() {

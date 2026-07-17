@@ -184,6 +184,55 @@ body {
   margin-bottom: 0;
 }
 
+/* ========== Code snippets ========== */
+.dash-snippet {
+  margin-top: 14px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.dash-snippet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 12px;
+  background: var(--accent-soft);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.dash-snippet-copy {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--accent);
+  font: inherit;
+  font-weight: 600;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.dash-snippet-copy:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.dash-snippet pre {
+  margin: 0;
+  padding: 14px;
+  background: #0d2436;
+  color: #dfe8f1;
+  font-family: "SF Mono", Menlo, Consolas, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  overflow-x: auto;
+}
+
 .dash-preview {
   position: relative;
   background: #fff;

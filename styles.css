@@ -17,6 +17,16 @@
   display: none !important;
 }
 
+/* Bubble teaser bawaan Qiscus ("Hello There, Welcome to Qiscus!") —
+   disembunyikan karena sudah digantikan oleh toggle + panel custom
+   (#ccm-toggle / #ccm-panel). Tanpa ini, teaser-nya tetap auto-muncul,
+   bentrok posisi (fixed bottom-right, sama seperti panel kita) dan
+   ikut ketiban custom CSS header chat room (jadi gelap & teks susah
+   dibaca) karena Qiscus reuse class yang sama di teaser ini. */
+iframe#qcw-welcome-iframe {
+  display: none !important;
+}
+
 iframe#qcw-iframe {
   max-width: calc(100vw - 48px);
 }

@@ -70,7 +70,9 @@ var MENU_ITEMS = [
 ];
 
 // ── Qiscus widget configuration ───────────────────────────
-var QISCUS_APP_ID = "bbhhf-cyj6oquncbzcexl";
+// App ID TIDAK di-hardcode di sini — user yang memakai widget ini
+// diminta memasukkannya sendiri lewat popup saat halaman pertama kali
+// dibuka (disimpan di localStorage). Lihat AppIdGate di js/app.js.
 var QISCUS_SCRIPT_URL = "https://omnichannel.qiscus.com/js/qismo-v5.js";
 
 var PRODUCT_CARD = {

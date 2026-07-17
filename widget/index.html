@@ -60,6 +60,71 @@
       </div>
     </div>
 
+    <!-- App ID prompt: muncul saat pertama kali dibuka (belum ada App ID
+         tersimpan di localStorage) sebelum widget Qiscus di-load -->
+    <div id="ccm-appid-modal" class="ccm-modal-overlay">
+      <div class="ccm-modal">
+        <div class="ccm-modal-header">
+          <div class="ccm-eyebrow">Setup</div>
+          <h2>Masukkan Qiscus App ID</h2>
+        </div>
+        <div class="ccm-modal-body">
+          <p>
+            Widget ini butuh App ID Qiscus Omnichannel Anda supaya bisa
+            terhubung ke live chat.
+          </p>
+          <form id="ccm-appid-form">
+            <input
+              type="text"
+              id="ccm-appid-input"
+              placeholder="mis. abcde-xxxxxxxxxxx"
+              autocomplete="off"
+              required
+            />
+            <button type="submit">Simpan &amp; Muat Widget</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Load-error page: tampil kalau SDK Qiscus gagal dimuat/init
+         (mis. App ID salah atau koneksi bermasalah) -->
+    <div id="ccm-load-error" class="ccm-error-overlay">
+      <div class="ccm-error-box">
+        <div class="ccm-error-icon">
+          <svg
+            width="26"
+            height="26"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 9v4" />
+            <path d="M12 17h.01" />
+            <path
+              d="m10.29 3.86-8.18 14.18A2 2 0 0 0 4 21h16a2 2 0 0 0 1.89-2.96L13.71 3.86a2 2 0 0 0-3.42 0Z"
+            />
+          </svg>
+        </div>
+        <h2>Widget gagal dimuat</h2>
+        <p>
+          Terjadi kesalahan saat menghubungkan ke Qiscus Omnichannel.
+          Periksa App ID atau koneksi internet Anda, lalu coba lagi.
+        </p>
+        <div class="ccm-error-actions">
+          <button type="button" id="ccm-error-reload">
+            Muat Ulang Halaman
+          </button>
+          <button type="button" id="ccm-error-change-appid">
+            Ganti App ID
+          </button>
+        </div>
+      </div>
+    </div>
+
     <!-- Scripts: cases dulu (data case/kategori), lalu config, lalu app logic -->
     <script src="../js/cases.js"></script>
     <script src="../js/config.js"></script>

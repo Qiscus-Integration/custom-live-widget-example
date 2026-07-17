@@ -98,6 +98,74 @@
     },
   };
 
+  // ── AppIdGate ────────────────────────────────────────────
+  // App ID Qiscus tidak di-hardcode di config.js — diminta dari user
+  // yang memakai widget ini lewat popup saat pertama kali dibuka, lalu
+  // disimpan di localStorage supaya kunjungan berikutnya langsung load.
+  var AppIdGate = {
+    STORAGE_KEY: "ccm-qiscus-app-id",
+
+    get: function () {
+      return localStorage.getItem(AppIdGate.STORAGE_KEY) || "";
+    },
+
+    save: function (appId) {
+      localStorage.setItem(AppIdGate.STORAGE_KEY, appId);
+    },
+
+    clear: function () {
+      localStorage.removeItem(AppIdGate.STORAGE_KEY);
+    },
+
+    prompt: function (onReady) {
+      var overlay = document.getElementById("ccm-appid-modal");
+      var form = document.getElementById("ccm-appid-form");
+      var input = document.getElementById("ccm-appid-input");
+
+      overlay.classList.add("open");
+      input.value = AppIdGate.get();
+
+      form.addEventListener("submit", function handler(e) {
+        e.preventDefault();
+        var value = input.value.trim();
+        if (!value) return;
+
+        AppIdGate.save(value);
+        overlay.classList.remove("open");
+        form.removeEventListener("submit", handler);
+        onReady(value);
+      });
+
+      setTimeout(function () {
+        input.focus();
+      }, 50);
+    },
+  };
+
+  // ── ErrorScreen ──────────────────────────────────────────
+  // Halaman gagal-muat, tampil kalau SDK Qiscus gagal di-load atau
+  // gagal di-init (mis. App ID salah, koneksi bermasalah).
+  var ErrorScreen = {
+    show: function () {
+      document.getElementById("ccm-load-error").classList.add("open");
+    },
+
+    bindEvents: function () {
+      document
+        .getElementById("ccm-error-reload")
+        .addEventListener("click", function () {
+          window.location.reload();
+        });
+
+      document
+        .getElementById("ccm-error-change-appid")
+        .addEventListener("click", function () {
+          AppIdGate.clear();
+          window.location.reload();
+        });
+    },
+  };
+
   // ── QiscusLoader ─────────────────────────────────────────
   // Bypass login, load script, dan kelola custom CSS.
   var QiscusLoader = {
@@ -211,9 +279,10 @@
     },
 
     /**
-     * Load Qiscus SDK script dan inisialisasi widget.
+     * Load Qiscus SDK script dan inisialisasi widget dengan App ID
+     * yang diberikan (dari AppIdGate — localStorage atau popup).
      */
-    loadScript: function () {
+    loadScript: function (appId) {
       var options = Object.assign({}, QISCUS_OPTIONS, {
         widgetCustomCSS: WIDGET_CUSTOM_CSS,
       });
@@ -233,9 +302,16 @@
       script.type = "text/javascript";
       script.src = QISCUS_SCRIPT_URL;
       script.async = true;
+      script.onerror = function () {
+        ErrorScreen.show();
+      };
       script.onload = script.onreadystatechange = function () {
-        new Qismo(QISCUS_APP_ID, params);
-        QiscusLoader.attachCustomCSS();
+        try {
+          new Qismo(appId, params);
+          QiscusLoader.attachCustomCSS();
+        } catch (err) {
+          ErrorScreen.show();
+        }
       };
 
       var firstScript = document.getElementsByTagName("script")[0];
@@ -261,11 +337,21 @@
 
     // Bind panel events
     PanelController.bindEvents();
+    ErrorScreen.bindEvents();
 
-    // Setup & load Qiscus
+    // Setup Qiscus, lalu load — App ID diambil dari localStorage kalau
+    // sudah pernah diisi, atau diminta dulu lewat popup.
     QiscusLoader.setBypassLogin();
     QiscusLoader.observeNewIframes();
-    QiscusLoader.loadScript();
+
+    var existingAppId = AppIdGate.get();
+    if (existingAppId) {
+      QiscusLoader.loadScript(existingAppId);
+    } else {
+      AppIdGate.prompt(function (appId) {
+        QiscusLoader.loadScript(appId);
+      });
+    }
   }
 
   // Jalankan saat DOM ready

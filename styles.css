@@ -207,6 +207,185 @@ iframe#qcw-iframe {
   color: var(--accent);
 }
 
+/* ========== App ID Modal ========== */
+.ccm-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 24, 31, 0.5);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999999999;
+  font-family: var(--font-body);
+  padding: 20px;
+}
+
+.ccm-modal-overlay.open {
+  display: flex;
+}
+
+.ccm-modal {
+  background: #fff;
+  border-radius: var(--radius);
+  width: 100%;
+  max-width: 400px;
+  overflow: hidden;
+  box-shadow: 0 20px 60px rgba(1, 65, 108, 0.3);
+}
+
+.ccm-modal-header {
+  padding: 24px;
+  background: var(--accent);
+  color: #fff;
+}
+
+.ccm-modal-header h2 {
+  margin: 0;
+  font-family: var(--font-heading);
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.ccm-modal-body {
+  padding: 22px 24px 24px;
+}
+
+.ccm-modal-body p {
+  margin: 0 0 16px;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+#ccm-appid-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+#ccm-appid-input {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 11px 14px;
+  font-size: 14px;
+  font-family: var(--font-body);
+  color: var(--text);
+}
+
+#ccm-appid-input:focus {
+  outline: none;
+  border-color: var(--accent-bright);
+}
+
+.ccm-modal-body button[type="submit"] {
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background 0.12s ease;
+}
+
+.ccm-modal-body button[type="submit"]:hover {
+  background: var(--accent-bright);
+}
+
+/* ========== Load Error Page ========== */
+.ccm-error-overlay {
+  position: fixed;
+  inset: 0;
+  background: #f7fafc;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999999998;
+  font-family: var(--font-body);
+  padding: 20px;
+}
+
+.ccm-error-overlay.open {
+  display: flex;
+}
+
+.ccm-error-box {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(1, 65, 108, 0.08);
+  max-width: 380px;
+  width: 100%;
+  padding: 32px 28px;
+  text-align: center;
+}
+
+.ccm-error-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 18px;
+}
+
+.ccm-error-box h2 {
+  margin: 0 0 8px;
+  font-family: var(--font-heading);
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.ccm-error-box p {
+  margin: 0 0 22px;
+  font-size: 13.5px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.ccm-error-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ccm-error-actions button {
+  border-radius: 10px;
+  padding: 11px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background 0.12s ease;
+}
+
+#ccm-error-reload {
+  border: none;
+  background: var(--accent);
+  color: #fff;
+}
+
+#ccm-error-reload:hover {
+  background: var(--accent-bright);
+}
+
+#ccm-error-change-appid {
+  border: 1px solid var(--line);
+  background: #fff;
+  color: var(--text);
+}
+
+#ccm-error-change-appid:hover {
+  background: var(--accent-soft);
+}
+
 /* ========== Footer ========== */
 .ccm-footer {
   padding: 14px 24px 18px;

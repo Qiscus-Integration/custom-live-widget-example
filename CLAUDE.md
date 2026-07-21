@@ -28,6 +28,10 @@ After every code change in this repo, automatically commit the change using
 the `smart-conventional-commits` skill — do not ask for confirmation first.
 This applies to every session, not just when explicitly requested.
 
+Immediately after `smart-conventional-commits` finishes (every time, not just
+when the user says "redeploy"), run the full redeploy workflow below with
+`force: true`, without asking for confirmation first.
+
 ## Deployment (Coolify)
 
 The site is deployed on Coolify as app **live-custom-widget**
@@ -37,16 +41,19 @@ The site is deployed on Coolify as app **live-custom-widget**
 Action for deployment — it was removed after a Coolify auto-deploy bug, so
 redeploys must be triggered manually.
 
-When the user says "redeploy" (or equivalent), run this workflow immediately,
-without asking for confirmation first:
+Trigger this workflow immediately, without asking for confirmation first,
+whenever: (a) the user says "redeploy" (or equivalent), or (b) the
+`smart-conventional-commits` skill just finished committing a change (see
+above):
 
 1. If there are uncommitted changes, commit them first via
    `smart-conventional-commits`.
 2. `git push origin main` (redeploy always pulls from `main` — make sure it's
    up to date first).
 3. Call `mcp__claude_ai_coolify_qiscus__deploy_app` with
-   `uuid: "qk7k8h7g0w8g5ba1tjfsds57"` (use `force: true` only if the user
-   asks for a clean/no-cache rebuild).
+   `uuid: "qk7k8h7g0w8g5ba1tjfsds57"` and `force: true` (always force a
+   clean/no-cache rebuild — this is now the standing default for every
+   redeploy, not just explicit clean-rebuild requests).
 4. Poll `mcp__claude_ai_coolify_qiscus__list_deployments_for_app` (same uuid)
    or use the Monitor tool to poll
    `curl -s -o /dev/null -w "%{http_code}" https://live-custom-widget-d1bfc6.coolify.qiscus.io/`

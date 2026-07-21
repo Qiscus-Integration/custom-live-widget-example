@@ -20,6 +20,13 @@
   };
 
   var SDK_LOAD_TIMEOUT_MS = 10000;
+  // Setelah new Qismo() sukses tanpa exception, tunggu widget Qiscus
+  // benar-benar menyuntikkan UI-nya (.qcw-trigger-btn / qcw-welcome-iframe)
+  // sebelum menganggap sdkState "ready" — App ID/Channel ID salah tidak
+  // melempar exception, backend cuma menolak secara async (404), jadi UI
+  // Qiscus tidak pernah muncul.
+  var READY_CHECK_TIMEOUT_MS = 8000;
+  var QISCUS_READY_SELECTOR = ".qcw-trigger-btn, #qcw-welcome-iframe";
 
   /**
    * Ganti teks sementara pada elemen (mis. tombol) lalu kembalikan ke
@@ -229,6 +236,8 @@
         "Widget chat gagal disiapkan dengan benar. Silakan muat ulang halaman.",
       "init-error":
         "Widget chat gagal diinisialisasi. Periksa kembali App ID & Channel ID Anda.",
+      "backend-error":
+        "Widget tidak merespons — App ID atau Channel ID kemungkinan salah atau tidak ditemukan di akun Qiscus Anda. Periksa kembali lalu coba lagi.",
     },
 
     show: function (reason) {
@@ -419,10 +428,18 @@
       };
 
       var settled = false;
+      var readyObserver = null;
+      var readyTimeoutId = null;
+
       function settle(success, reason) {
         if (settled) return;
         settled = true;
         clearTimeout(timeoutId);
+        clearTimeout(readyTimeoutId);
+        if (readyObserver) {
+          readyObserver.disconnect();
+          readyObserver = null;
+        }
         if (success) {
           state.sdkState = "ready";
         } else {
@@ -430,6 +447,35 @@
           ErrorScreen.show(reason);
         }
         if (onResult) onResult(success);
+      }
+
+      /**
+       * new Qismo() sukses secara sinkron tidak berarti widget benar-benar
+       * jalan — App ID/Channel ID yang ditolak backend (404) tidak pernah
+       * melempar exception di sini. Tunggu bukti nyata: elemen UI Qiscus
+       * (trigger button / teaser iframe) muncul di DOM.
+       */
+      function watchForReady() {
+        if (document.querySelector(QISCUS_READY_SELECTOR)) {
+          settle(true);
+          return;
+        }
+
+        if (window.MutationObserver) {
+          readyObserver = new MutationObserver(function () {
+            if (document.querySelector(QISCUS_READY_SELECTOR)) {
+              settle(true);
+            }
+          });
+          readyObserver.observe(document.body, {
+            childList: true,
+            subtree: true,
+          });
+        }
+
+        readyTimeoutId = setTimeout(function () {
+          settle(false, "backend-error");
+        }, READY_CHECK_TIMEOUT_MS);
       }
 
       var timeoutId = setTimeout(function () {
@@ -452,7 +498,7 @@
         try {
           new Qismo(appId, params);
           QiscusLoader.attachCustomCSS();
-          settle(true);
+          watchForReady();
         } catch (err) {
           settle(false, "init-error");
         }

@@ -542,8 +542,17 @@ var CASES = [
         " .comment--other .comment__sender-name," +
         " .comment__username," +
         " div[class*=\"comment--other\"] div[class*=\"sender-name\"]," +
+        " div[class*=\"comment-other\"] div[class*=\"sender-name\"]," +
         " div[class*=\"comment\"][class*=\"sender-name\"]," +
-        " div[class*=\"comment\"][class*=\"username\"]" +
+        " div[class*=\"comment\"][class*=\"username\"]," +
+        " div[class*=\"comment--other\"] [class*=\"sender\"]," +
+        " div[class*=\"comment--other\"] [class*=\"author\"]," +
+        " div[class*=\"comment--other\"] [class*=\"username\"]," +
+        " div[class*=\"comment--other\"] [class*=\"name\"]," +
+        " div[class*=\"comment-other\"] [class*=\"sender\"]," +
+        " div[class*=\"comment-other\"] [class*=\"author\"]," +
+        " div[class*=\"comment-other\"] [class*=\"username\"]," +
+        " div[class*=\"comment-other\"] [class*=\"name\"]" +
         " { display: none !important; }",
     },
     snippets: [
